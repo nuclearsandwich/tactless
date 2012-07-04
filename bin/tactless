@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+# vim: set ft=ruby
+
+require "yaml"
+
+TACTLESS_HOME = File.join ENV["HOME"], ".tactless"
+DB_FILE = File.join TACTLESS_HOME, "db.yml"
+NEW_CONTACT_FILE = File.join TACTLESS_HOME, "NEW_CONTACT.yml"
+
+
+Dir.mkdir TACTLESS_HOME unless File.exists? TACTLESS_HOME
+File.write DB_FILE, "" unless File.exists? DB_FILE
+
+
+case ARGV.shift
+when "mutt"
+  db = YAML.load_file DB_FILE
+  found = nil
+  db["contacts"].each do |c|
+    found = c and break if Array(c["aliases"]).include?(ARGV.first)
+  end
+
+  puts "\n#{found["email"]}\t#{found["name"]}\t#{found["tags"]*","}\n" if found
+when "add"
+  File.write NEW_CONTACT_FILE, ""
+  system "vim -f #{NEW_CONTACT_FILE}"
+  new_contact = YAML.load_file NEW_CONTACT_FILE
+  db = YAML.load_file DB_FILE rescue {}
+  (db["contacts"] ||= []) << new_contact
+  File.write DB_FILE, YAML.dump(db)
+when "browse"
+  system "vim -f #{DB_FILE}"
+end
