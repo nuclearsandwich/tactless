@@ -6,10 +6,17 @@ require "yaml"
 TACTLESS_HOME = File.join ENV["HOME"], ".tactless"
 DB_FILE = File.join TACTLESS_HOME, "db.yml"
 NEW_CONTACT_FILE = File.join TACTLESS_HOME, "NEW_CONTACT.yml"
+NEW_CONTACT_TEMPLATE_FILE = File.join TACTLESS_HOME, "CONTACT_TEMPLATE"
 
 
 Dir.mkdir TACTLESS_HOME unless File.exists? TACTLESS_HOME
 File.write DB_FILE, "" unless File.exists? DB_FILE
+NEW_CONTACT_TEMPLATE = if File.exists? NEW_CONTACT_TEMPLATE_FILE
+  File.read NEW_CONTACT_TEMPLATE_FILE 
+else
+  ""
+end
+
 
 
 case ARGV.shift
@@ -22,7 +29,7 @@ when "mutt"
 
   puts "\n#{found["email"]}\t#{found["name"]}\t#{found["tags"]*","}\n" if found
 when "add"
-  File.write NEW_CONTACT_FILE, ""
+  File.write NEW_CONTACT_FILE, NEW_CONTACT_TEMPLATE
   system "vim -f #{NEW_CONTACT_FILE}"
   new_contact = YAML.load_file NEW_CONTACT_FILE
   db = YAML.load_file DB_FILE rescue {}
@@ -30,4 +37,6 @@ when "add"
   File.write DB_FILE, YAML.dump(db)
 when "browse"
   system "vim -f #{DB_FILE}"
+else
+  puts "No command #{ARGV.first} found."
 end
