@@ -17,7 +17,7 @@ Installation
 
 Install it as a gem:
 
-    $ gem install tactless
+  $ gem install tactless
 
 Usage
 -----
@@ -28,12 +28,14 @@ a contact.
 - `tactless add`: This will open a vim window (yes, Vim, hardcoded for now)
 where you can enter a yaml representation of your new contact. Let's add
 
-    name: Steven! Ragnarök
-    email: steven@nuclearsandwich.com
-    aliases:
-    - steven!
-    tags:
-    - \m/
+```yaml
+name: Steven! Ragnarök
+email: steven@nuclearsandwich.com
+aliases:
+- steven!
+tags:
+- \m/
+```
 
 - `tactless browse`: Opens vim with the entire contacts database. In the future
 this may open the file read only.
